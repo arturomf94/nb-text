@@ -18,6 +18,7 @@ for file in files:
 		data = ''.join(data)
 		data = data.replace(',','')
 		data = data.replace('"','')
+		data = unicode(data, errors='ignore')
 		all_texts.append([data,file_name])
 
 
@@ -25,4 +26,4 @@ with open('all_texts.csv', 'wb') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     wr.writerow(['content','file_name'])
     for elem in all_texts:
-wr.writerow(elem)
+	wr.writerow(elem)
