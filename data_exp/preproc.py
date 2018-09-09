@@ -40,4 +40,4 @@ for category, category_id in sorted(category_to_id.items()):
   bigrams = [v for v in feature_names if len(v.split(' ')) == 2]
   print("# '{}':".format(category))
   print("  . Most correlated unigrams:\n. {}".format('\n. '.join(unigrams[-N:])))
-  print("  . Most correlated bigrams:\n. {}".format('\n. '.join(bigrams[-N:])))
+print("  . Most correlated bigrams:\n. {}".format('\n. '.join(bigrams[-N:])))
