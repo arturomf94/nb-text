@@ -32,5 +32,10 @@ X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
 clf = MultinomialNB().fit(X_train_tfidf, y_train)
 
+test_texts = pd.read_csv('../test_texts.csv')
 
-print(clf.predict(count_vect.transform(["The disturbing piece of information is that the evil Hutts, criminal warlords of the galaxy, are building a secret superweapon: a reconstruction of the original Death Star, to be named Darksaber. This planet-crushing power will be in the ruthless hands of Durga the Hutt -- a creature without conscience or mercy.But there is worse news yet: the Empire lives. The beautiful Admiral Daala, still very much alive and more driven than ever to destroy the Jedi, has joined forces with the defeated Pellaeon, former second in command to Grand Admiral Thrawn. Together they are marshaling Imperial forces to wipe out the New Republic.Now, as Luke, Han, Leia, Chewbacca, Artoo and Threepio regroup to face these threats, they are joined by new Jedi Knights and Callista. Together they must fight on two fronts, outshooting and outsmarting the most formidable enemies in the galaxy. In Darksaber the Jedi are heading for the ultimate test of their power--a test in which all the temptations of the dark side beckon. And Luke Skywalker must draw upon his innermost resources to fight for a world in which he can not only live, but dare to love."])))
+for value in test_texts.values:
+	print('Category:\n')
+	print(value[1])
+	print('Predicted:\n')
+	print(clf.predict(count_vect.transform([value[0]])))
