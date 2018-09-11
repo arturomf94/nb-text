@@ -12,6 +12,13 @@ print(result_classification.head())
 
 data = pd.merge(all_texts, result_classification, how = 'inner', on = 'file_name')
 
+data = data[data['category'] != 'myster']
+data = data[data['category'] != 'satire']
+data = data[data['category'] != 'travel']
+data = data[data['category'] != 'history']
+data = data[data['category'] != 'children']
+
+print(data.shape)
 print(data.head())
 
 data['category_id'] = data['category'].factorize()[0]
@@ -29,7 +36,7 @@ tfidf = TfidfVectorizer(sublinear_tf = True, min_df = 5, norm = 'l2', encoding =
 
 features = tfidf.fit_transform(data.content).toarray()
 labels = data.category_id
-features.shape
+print(features.shape)
 
 N = 2
 for category, category_id in sorted(category_to_id.items()):
@@ -40,4 +47,4 @@ for category, category_id in sorted(category_to_id.items()):
   bigrams = [v for v in feature_names if len(v.split(' ')) == 2]
   print("# '{}':".format(category))
   print("  . Most correlated unigrams:\n. {}".format('\n. '.join(unigrams[-N:])))
-print("  . Most correlated bigrams:\n. {}".format('\n. '.join(bigrams[-N:])))
+  print("  . Most correlated bigrams:\n. {}".format('\n. '.join(bigrams[-N:])))
