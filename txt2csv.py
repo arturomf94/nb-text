@@ -26,7 +26,7 @@ with open('all_texts.csv', 'wb') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     wr.writerow(['content','file_name'])
     for elem in all_texts:
-	wr.writerow(elem)
+		wr.writerow(elem)
 
 
 # Test txt files	
@@ -55,4 +55,4 @@ with open('test_texts.csv', 'wb') as myfile:
     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
     wr.writerow(['content','file_name'])
     for elem in all_texts:
-	wr.writerow(elem)
+		wr.writerow(elem)

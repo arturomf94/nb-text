@@ -7,10 +7,13 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
 from sklearn import metrics
 import numpy as np
 from io import StringIO
 import seaborn as sns
+import csv
+from imblearn.under_sampling import RandomUnderSampler
 
 # Prepare data
 
@@ -44,21 +47,33 @@ clf = MultinomialNB().fit(X_train_tfidf, y_train)
 
 test_texts = pd.read_csv('../test_texts.csv')
 
+test_results = []
 for value in test_texts.values:
 	print('Category:\n')
-	print(value[1])
+	print(value[1].replace('.txt',''))
 	print('Predicted:\n')
-	print(clf.predict(count_vect.transform([value[0]])))
+	print(clf.predict(count_vect.transform([value[0]]))[0])
+	test_results.append([value[1].replace('.txt',''),clf.predict(count_vect.transform([value[0]]))[0]])
+
+with open('test_results.csv', 'wb') as myfile:
+    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+    wr.writerow(['file_name', 'prediction'])
+    for elem in test_results:
+		wr.writerow(elem)
 
 accuracies = cross_val_score(MultinomialNB(), features, labels, scoring='accuracy', cv=5)
 
-print(accuracies)
+print(accuracies.mean())
 
 model = MultinomialNB()
 
-X_train, X_test, y_train, y_test, indices_train, indices_test = train_test_split(features, labels, data.index, test_size=0.33, random_state=0)
-model.fit(X_train, y_train)
+X_train, X_test, y_train, y_test, indices_train, indices_test = train_test_split(features, labels, data.index, test_size = 0.2, random_state=0)
+clf = model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print(accuracy)
 
 conf_mat = confusion_matrix(y_test, y_pred)
 fig, ax = plt.subplots(figsize=(10,10))
@@ -69,3 +84,41 @@ plt.xlabel('Predicted')
 plt.show()
 
 print(metrics.classification_report(y_test, y_pred, target_names=data['category'].unique()))
+
+
+# Resampling/Undersampling 
+
+rus = RandomUnderSampler(ratio = .8, random_state=0)
+rus.fit(features, labels)
+X_resampled, y_resampled = rus.sample(features, labels)
+
+clf = model.fit(X_resampled, y_resampled)
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print(accuracy)
+
+conf_mat = confusion_matrix(y_test, y_pred)
+fig, ax = plt.subplots(figsize=(10,10))
+sns.heatmap(conf_mat, annot=True, fmt='d',
+            xticklabels=category_id_df.category.values, yticklabels=category_id_df.category.values)
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.show()
+
+print(metrics.classification_report(y_test, y_pred, target_names=data['category'].unique()))
+
+test_results = []
+for value in test_texts.values:
+	print('Category:\n')
+	print(value[1].replace('.txt',''))
+	print('Predicted:\n')
+	print(clf.predict(count_vect.transform([value[0]]))[0])
+	test_results.append([value[1].replace('.txt',''),clf.predict(tfidf_transformer.fit_transform(count_vect.transform([value[0]])))[0]])
+
+with open('test_results_2.csv', 'wb') as myfile:
+    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+    wr.writerow(['file_name', 'prediction'])
+    for elem in test_results:
+		wr.writerow(elem)

@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import chi2
 import numpy as np
 from io import StringIO
+import csv
 
 all_texts = pd.read_csv('../all_texts.csv')
 result_classification = pd.read_csv('../result_classification.csv', index_col=0)
@@ -38,6 +39,8 @@ features = tfidf.fit_transform(data.content).toarray()
 labels = data.category_id
 print(features.shape)
 
+correlations = []
+
 N = 2
 for category, category_id in sorted(category_to_id.items()):
   features_chi2 = chi2(features, labels == category_id)
@@ -48,3 +51,10 @@ for category, category_id in sorted(category_to_id.items()):
   print("# '{}':".format(category))
   print("  . Most correlated unigrams:\n. {}".format('\n. '.join(unigrams[-N:])))
   print("  . Most correlated bigrams:\n. {}".format('\n. '.join(bigrams[-N:])))
+  correlations.append([category, ' and '.join(unigrams[-N:]), ' and '.join(bigrams[-N:])])
+
+with open('ngram_correlations.csv', 'wb') as myfile:
+    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+    wr.writerow(['category', 'unigrams', 'bigrams'])
+    for elem in correlations:
+		wr.writerow(elem)
