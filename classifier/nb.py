@@ -43,7 +43,7 @@ X_train_counts = count_vect.fit_transform(X_train)
 tfidf_transformer = TfidfTransformer()
 X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
-clf = MultinomialNB().fit(X_train_tfidf, y_train)
+clf = MultinomialNB(alpha = .001).fit(X_train_tfidf, y_train)
 
 test_texts = pd.read_csv('../test_texts.csv')
 
@@ -62,11 +62,11 @@ with open('test_results.csv', 'wb') as myfile:
     for elem in test_results:
 		wr.writerow(elem)
 
-accuracies = cross_val_score(MultinomialNB(), features, labels, scoring='accuracy', cv=5)
+accuracies = cross_val_score(MultinomialNB(alpha = .001), features, labels, scoring='accuracy', cv=5)
 
 print(accuracies.mean())
 
-model = MultinomialNB()
+model = MultinomialNB(alpha = .001)
 
 X_train, X_test, y_train, y_test, indices_train, indices_test = train_test_split(features, labels, data.index, test_size = 0.2, random_state=0)
 clf = model.fit(X_train, y_train)
@@ -147,7 +147,7 @@ X_train_counts = count_vect.fit_transform(X_train)
 tfidf_transformer = TfidfTransformer()
 X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
-clf = MultinomialNB().fit(X_train_tfidf, y_train)
+clf = MultinomialNB(alpha = .001).fit(X_train_tfidf, y_train)
 
 test_texts = pd.read_csv('../test_texts.csv')
 
@@ -166,11 +166,11 @@ with open('test_results2.csv', 'wb') as myfile:
     for elem in test_results:
 		wr.writerow(elem)
 
-accuracies = cross_val_score(MultinomialNB(), features, labels, scoring='accuracy', cv=5)
+accuracies = cross_val_score(MultinomialNB(alpha = .001), features, labels, scoring='accuracy', cv=5)
 
 print(accuracies.mean())
 
-model = MultinomialNB()
+model = MultinomialNB(alpha = .001)
 
 X_train, X_test, y_train, y_test, indices_train, indices_test = train_test_split(features, labels, data.index, test_size = 0.2, random_state=0)
 clf = model.fit(X_train, y_train)
